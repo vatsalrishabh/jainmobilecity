@@ -514,7 +514,7 @@ export type LATEST_BLOG_QUERYResult = Array<{
   }>;
 }>;
 // Variable: DEAL_PRODUCTS
-// Query: *[_type == 'product' && status == 'hot'] | order(name asc){  ...,"categories": categories[]->title}
+// Query: *[_type == 'product' && status == 'hot'] | order(name asc){    ...,"categories": categories[]->title  }
 export type DEAL_PRODUCTSResult = Array<{
   _id: string;
   _type: "product";
@@ -556,7 +556,7 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type=='brand'] | order(name asc) ": BRANDS_QUERYResult;
-    "*[_type == 'blog' && isLatest == true]|order(name asc){\n      ...,\n      blogcategories[]->{\n      title\n    }\n    }": LATEST_BLOG_QUERYResult;
-    "*[_type == 'product' && status == 'hot'] | order(name asc){\n  ...,\"categories\": categories[]->title\n}": DEAL_PRODUCTSResult;
+    " *[_type == 'blog' && isLatest == true]|order(name asc){\n      ...,\n      blogcategories[]->{\n      title\n    }\n    }": LATEST_BLOG_QUERYResult;
+    "*[_type == 'product' && status == 'hot'] | order(name asc){\n    ...,\"categories\": categories[]->title\n  }": DEAL_PRODUCTSResult;
   }
 }

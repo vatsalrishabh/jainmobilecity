@@ -1,7 +1,7 @@
-import { getAllBrands } from "@/sanity/queries";
 import React from "react";
 import Title from "./Title";
 import Link from "next/link";
+import { getAllBrands } from "@/sanity/queries";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { GitCompareArrows, Headset, ShieldCheck, Truck } from "lucide-react";
@@ -31,7 +31,6 @@ const extraData = [
 
 const ShopByBrands = async () => {
   const brands = await getAllBrands();
-
   return (
     <div className="mb-10 lg:mb-20 bg-shop_light_bg p-5 lg:p-7 rounded-md">
       <div className="flex items-center gap-5 justify-between mb-10">
@@ -43,14 +42,11 @@ const ShopByBrands = async () => {
           View all
         </Link>
       </div>
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
         {brands?.map((brand) => (
           <Link
             key={brand?._id}
-            href={{
-              pathname: "/shop",
-              query: { brand: brand?.slug?.current },
-            }}
+            href={`/brand/${brand?.slug?.current}`}
             className="bg-white w-34 h-24 flex items-center justify-center rounded-md overflow-hidden hover:shadow-lg shadow-shop_dark_green/20 hoverEffect"
           >
             {brand?.image && (
@@ -65,7 +61,7 @@ const ShopByBrands = async () => {
           </Link>
         ))}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16 p-2  shadow-sm shadow-shop_light_green/20 py-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16 p-2 shadow-sm hover:shadow-shop_light_green/20 py-5">
         {extraData?.map((item, index) => (
           <div
             key={index}

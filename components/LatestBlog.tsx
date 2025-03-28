@@ -1,9 +1,9 @@
 import React from "react";
 import Title from "./Title";
 import { getLatestBlogs } from "@/sanity/queries";
-import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
+import Link from "next/link";
 import { Calendar } from "lucide-react";
 import dayjs from "dayjs";
 
@@ -12,9 +12,9 @@ const LatestBlog = async () => {
   return (
     <div className="mb-10 lg:mb-20">
       <Title>Latest Blog</Title>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5 mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
         {blogs?.map((blog) => (
-          <div key={blog?._id}>
+          <div key={blog?._id} className="rounded-lg overflow-hidden">
             {blog?.mainImage && (
               <Link href={`/blog/${blog?.slug?.current}`}>
                 <Image
@@ -47,7 +47,7 @@ const LatestBlog = async () => {
               </div>
               <Link
                 href={`/blog/${blog?.slug?.current}`}
-                className="text-base font-bold tracking-wide mt-5 line-clamp-2 hover:text-shop_dark_green hoverEffect"
+                className="text-base font-semibold tracking-wide mt-5 line-clamp-2 hover:text-shop_dark_green hoverEffect"
               >
                 {blog?.title}
               </Link>

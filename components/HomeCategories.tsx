@@ -1,15 +1,15 @@
 import React from "react";
 import Title from "./Title";
 import { Category } from "@/sanity.types";
-import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
+import Link from "next/link";
 
 const HomeCategories = ({ categories }: { categories: Category[] }) => {
   return (
-    <div className="w-full bg-white border border-shop_light_green/20 my-10 lg:my-20 p-5 lg:p-7 rounded-md">
+    <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">
       <Title className="border-b pb-3">Popular Categories</Title>
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 lg:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {categories?.map((category) => (
           <div
             key={category?._id}
@@ -28,12 +28,10 @@ const HomeCategories = ({ categories }: { categories: Category[] }) => {
                 </Link>
               </div>
             )}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <h3 className="text-base font-semibold">{category?.title}</h3>
               <p className="text-sm">
-                <span className="font-bold text-shop_dark_green">
-                  {`(${category?.productCount})`}{" "}
-                </span>
+                <span className="font-bold text-shop_dark_green">{`(${category?.productCount})`}</span>{" "}
                 items Available
               </p>
             </div>
