@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
 
 interface Props {
-  product: Product;
+  product: Product | null | undefined;
   className?: string;
 }
 
