@@ -10,14 +10,13 @@ import Link from "next/link";
 const SuccessPage = () => {
   const { resetCart } = useStore();
   const searchParams = useSearchParams();
-  const session_id = searchParams.get("session_id");
   const orderNumber = searchParams.get("orderNumber");
 
   useEffect(() => {
-    if (session_id) {
+    if (orderNumber) {
       resetCart();
     }
-  }, [session_id, resetCart]);
+  }, [orderNumber, resetCart]);
   return (
     <div className="py-5 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center mx-4">
       <motion.div
