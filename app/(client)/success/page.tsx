@@ -1,7 +1,6 @@
 "use client";
 
 import useStore from "@/store";
-import { useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "motion/react";
@@ -9,7 +8,6 @@ import { Check, Home, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 const SuccessPage = () => {
-  const { user } = useUser();
   const { resetCart } = useStore();
   const searchParams = useSearchParams();
   const session_id = searchParams.get("session_id");
