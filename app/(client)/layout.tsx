@@ -5,10 +5,10 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Jain Mobile City online store",
-    default: "Jain Mobile City online store",
+    template: `%s - ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store`,
+    default: ` ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store`,
   },
-  description: "Jain Mobile City online store, Your one stop shop for all your needs",
+  description: ` ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store, Your one stop shop for all your needs`,
 };
 
 export default function RootLayout({
