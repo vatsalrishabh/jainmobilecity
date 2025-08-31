@@ -22,3 +22,7 @@ This is the frontend of the application built with **Next.js App Router**, **Cle
 ## 📄 `app/layout.tsx`
 
 This is the **root layout**, which wraps the entire application. It only includes the `<Toaster />` and `{children}`.
+
+## 📄 `app/(client)/layout.tsx`
+
+This is the **root layout**, which wraps the entire application. It only includes the `<Header />, <Footer>, <ClearkProvider/>` and `{children}`.

@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Logo from "./Logo";
 import HeaderMenu from "./HeaderMenu";
@@ -7,19 +9,31 @@ import CartIcon from "./CartIcon";
 import FavoriteButton from "./FavoriteButton";
 import SignIn from "./SignIn";
 import MobileMenu from "./MobileMenu";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { Logs } from "lucide-react";
 import { getMyOrders } from "@/sanity/queries";
 
-const Header = async () => {
-  const user = await currentUser();
-  const { userId } = await auth();
-  let orders = null;
-  if (userId) {
-    orders = await getMyOrders(userId);
-  }
+const Header = () => {
+  const { userId } = useAuth();
+  const { user } = useUser();
+  const [orders, setOrders] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (userId) {
+        try {
+          const ordersData = await getMyOrders(userId);
+          setOrders(ordersData);
+        } catch (error) {
+          console.error("Error fetching orders:", error);
+        }
+      }
+    };
+
+    fetchOrders();
+  }, [userId]);
 
   return (
     <header className="sticky top-0 z-50 py-5 bg-white/70 backdrop-blur-md">
