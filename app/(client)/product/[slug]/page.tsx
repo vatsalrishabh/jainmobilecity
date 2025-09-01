@@ -1,113 +1,137 @@
-import AddToCartButton from "@/components/AddToCartButton";
-import Container from "@/components/Container";
-import FavoriteButton from "@/components/FavoriteButton";
-import ImageView from "@/components/ImageView";
-import PriceView from "@/components/PriceView";
-import ProductCharacteristics from "@/components/ProductCharacteristics";
-import { getProductBySlug } from "@/sanity/queries";
-import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
-import { notFound } from "next/navigation";
 import React from "react";
-import { FaRegQuestionCircle } from "react-icons/fa";
-import { FiShare2 } from "react-icons/fi";
-import { RxBorderSplit } from "react-icons/rx";
-import { TbTruckDelivery } from "react-icons/tb";
+import Image from "next/image";
+import AddToCartButton from "@/components/AddToCartButton";
+import FavoriteButton from "@/components/FavoriteButton";
+import { Product } from "@/types/product";
+import BuyNowButton from "@/components/BuyNowButton";
 
-const SingleProductPage = async ({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) => {
-  const { slug } = await params;
-  const product = await getProductBySlug(slug);
-  if (!product) {
-    return notFound();
-  }
+const SingleProductPage = () => {
+  // Mock product with full details
+  const product: Product = {
+    _id: "1",
+    name: "iPhone 15 Pro",
+    brand: "Apple",
+    sellingPrice: 89999,
+    costPrice: 75000,
+    stock: 25,
+    imageUrls: ["/images/products/product_1.png"],
+    specifications: {
+      ram: "8GB",
+      storage: "256GB",
+      processor: "A17 Pro Chip, 6-core CPU",
+      battery: "3,650mAh with 30W fast charging",
+      display: "6.1-inch Super Retina XDR OLED, 120Hz",
+      camera: "48MP + 12MP + 12MP Triple Camera, 12MP Front",
+      os: "iOS 17",
+    },
+    // Add MRP for discount calculation
+    mrp: 99999,
+  };
+
+  // Calculate discount safely
+  const discount =
+    product?.mrp && product.mrp > product.sellingPrice
+      ? Math.round(((product.mrp - product.sellingPrice) / product.mrp) * 100)
+      : 0;
+
   return (
-    <Container className="flex flex-col md:flex-row gap-10 py-10">
-      {product?.images && (
-        <ImageView images={product?.images} isStock={product?.stock} />
-      )}
-      <div className="w-full md:w-1/2 flex flex-col gap-5">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-bold">{product?.name}</h2>
-          <p className="text-sm text-gray-600 tracking-wide">
-            {product?.description}
-          </p>
-          <div className="flex items-center gap-0.5 text-xs">
-            {[...Array(5)].map((_, index) => (
-              <StarIcon
-                key={index}
-                size={12}
-                className="text-shop_light_green"
-                fill={"#3b9c3c"}
-              />
-            ))}
-            <p className="font-semibold">{`(120)`}</p>
-          </div>
+    <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-12">
+      {/* Left: Product Image */}
+      <div className="relative w-full aspect-square bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden group">
+        <Image
+          src={product.imageUrls?.[0] || "/images/products/product_1.png"}
+          alt={product.name}
+          fill
+          style={{ objectFit: "contain" }}
+          className="transition-transform duration-500 group-hover:scale-105"
+        />
+
+        {/* Favorite Button */}
+        <div className="absolute top-3 right-3 z-10">
+          <FavoriteButton productId={product._id} isInsideLink />
         </div>
-        <div className="space-y-2 border-t border-b border-gray-200 py-5">
-          <PriceView
-            price={product?.price}
-            discount={product?.discount}
-            className="text-lg font-bold"
-          />
-          <p
-            className={`px-4 py-1.5 text-sm text-center inline-block font-semibold rounded-lg ${product?.stock === 0 ? "bg-red-100 text-red-600" : "text-green-600 bg-green-100"}`}
-          >
-            {(product?.stock as number) > 0 ? "In Stock" : "Out of Stock"}
+      </div>
+
+      {/* Right: Product Details */}
+      <div className="flex flex-col gap-6">
+        {/* Brand + Name */}
+        <div>
+          <p className="text-sm text-gray-500 uppercase tracking-wide">
+            {product.brand}
           </p>
+          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
         </div>
-        <div className="flex items-center gap-2.5 lg:gap-3">
+
+        {/* Price + Discount */}
+        <div className="flex items-center gap-3">
+          <p className="text-3xl font-bold text-green-600">
+            ₹{product.sellingPrice.toLocaleString()}
+          </p>
+          {product.mrp && product.mrp > product.sellingPrice && (
+            <>
+              <p className="text-lg line-through text-gray-400">
+                ₹{product.mrp.toLocaleString()}
+              </p>
+              <span className="text-lg font-semibold text-red-500">
+                {discount}% OFF
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Stock Info */}
+        <p
+          className={`inline-block px-4 py-1.5 text-sm font-semibold rounded-lg w-fit ${
+            product.stock > 0
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {product.stock > 0 ? "In Stock" : "Out of Stock"}
+        </p>
+
+        {/* Delivery Info */}
+        <p className="text-gray-700 text-sm">
+          🚚 Free Delivery in 2–4 Days | 📦 1 Year Warranty
+        </p>
+
+        {/* Key Highlights */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Key Highlights
+          </h2>
+          <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+            <li>{product.specifications.display}</li>
+            <li>{product.specifications.processor}</li>
+            <li>{product.specifications.camera}</li>
+            <li>{product.specifications.battery}</li>
+            <li>{product.specifications.ram} RAM | {product.specifications.storage} Storage</li>
+          </ul>
+        </div>
+
+        {/* Add to Cart + Buy Now */}
+        <div className="flex gap-4">
           <AddToCartButton product={product} />
-          <FavoriteButton showProduct={true} product={product} />
+          <BuyNowButton product={product} />                
         </div>
-        <ProductCharacteristics product={product} />
-        <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-b-gray-200 py-5 -mt-2">
-          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-            <RxBorderSplit className="text-lg" />
-            <p>Compare color</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-            <FaRegQuestionCircle className="text-lg" />
-            <p>Ask a question</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-            <TbTruckDelivery className="text-lg" />
-            <p>Delivery & Return</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-            <FiShare2 className="text-lg" />
-            <p>Share</p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="border border-lightColor/25 border-b-0 p-3 flex items-center gap-2.5">
-            <Truck size={30} className="text-shop_orange" />
-            <div>
-              <p className="text-base font-semibold text-black">
-                Free Delivery
-              </p>
-              <p className="text-sm text-gray-500 underline underline-offset-2">
-                Enter your Postal code for Delivey Availability.
-              </p>
-            </div>
-          </div>
-          <div className="border border-lightColor/25 p-3 flex items-center gap-2.5">
-            <CornerDownLeft size={30} className="text-shop_orange" />
-            <div>
-              <p className="text-base font-semibold text-black">
-                Return Delivery
-              </p>
-              <p className="text-sm text-gray-500 ">
-                Free 30days Delivery Returns.{" "}
-                <span className="underline underline-offset-2">Details</span>
-              </p>
-            </div>
+
+        {/* Full Specifications */}
+        <div className="mt-6 border-t pt-4">
+          <h2 className="text-lg font-semibold text-gray-800 mb-3">
+            Full Specifications
+          </h2>
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+            <p><strong>Processor:</strong> {product.specifications.processor}</p>
+            <p><strong>Display:</strong> {product.specifications.display}</p>
+            <p><strong>Camera:</strong> {product.specifications.camera}</p>
+            <p><strong>Battery:</strong> {product.specifications.battery}</p>
+            <p><strong>RAM:</strong> {product.specifications.ram}</p>
+            <p><strong>Storage:</strong> {product.specifications.storage}</p>
+            <p><strong>Operating System:</strong> {product.specifications.os}</p>
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

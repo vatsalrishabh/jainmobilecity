@@ -11,27 +11,35 @@ const ProductCard = ({ product }: { product: Product }) => {
       ? Math.round(((product.mrp - product.sellingPrice) / product.mrp) * 100)
       : 0;
 
+
+     
+
   return (
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group relative">
       {/* Image Section */}
       <Link href={`/product/${product._id}`}>
         <div className="relative aspect-square overflow-hidden">
           <Image
-            src={product.imageUrls[0] || "/images/emptyCart.png"}
+            src={product.imageUrls?.[0] || "/images/products/product_1.png"}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            style={{ objectFit: "cover" }} // ✅ replaces legacy objectFit
+            className="group-hover:scale-110 transition-transform duration-500"
           />
 
           {/* Favorite Button */}
           <div className="absolute top-3 right-3">
-            <FavoriteButton productId={product._id} isInsideLink={true} />
+            <FavoriteButton productId={product._id} isInsideLink />
           </div>
 
           {/* Hover Overlay with Specs */}
           <div className="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center text-sm p-4">
-            <p className="mb-1">{product.specifications.ram}</p>
-            <p className="mb-1">{product.specifications.storage}</p>
+            {product.specifications.ram && (
+              <p className="mb-1">{product.specifications.ram}</p>
+            )}
+            {product.specifications.storage && (
+              <p className="mb-1">{product.specifications.storage}</p>
+            )}
             {product.specifications.processor && (
               <p className="mb-1">{product.specifications.processor}</p>
             )}

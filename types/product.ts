@@ -19,6 +19,7 @@ export interface Product {
   };
   costPrice: number;        // MRP (original price)
   sellingPrice: number;     // Price after discount
+  mrp?: number; 
   discountPercentage?: number; // Auto-calculated or stored discount %
   stock: number;
   imageUrls: string[];
