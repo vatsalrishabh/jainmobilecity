@@ -1,82 +1,83 @@
 import React from "react";
 import Title from "./Title";
-import Link from "next/link";
-import { getAllBrands } from "@/sanity/queries";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
-import { GitCompareArrows, Headset, ShieldCheck, Truck } from "lucide-react";
+import Link from "next/link";
 
-const extraData = [
+// Mock data for development
+const mockBrands = [
   {
-    title: "Free Delivery",
-    description: "Free shipping over $100",
-    icon: <Truck size={45} />,
+    _id: "1",
+    name: "Apple",
+    slug: { current: "apple" },
+    image: "/images/brands/brand_1.webp",
+    productCount: 15
   },
   {
-    title: "Free Return",
-    description: "Free shipping over $100",
-    icon: <GitCompareArrows size={45} />,
+    _id: "2",
+    name: "Samsung",
+    slug: { current: "samsung" },
+    image: "/images/brands/brand_2.jpg",
+    productCount: 12
   },
   {
-    title: "Customer Support",
-    description: "Friendly 27/7 customer support",
-    icon: <Headset size={45} />,
+    _id: "3",
+    name: "OnePlus",
+    slug: { current: "oneplus" },
+    image: "/images/brands/brand_3.png",
+    productCount: 8
   },
   {
-    title: "Money Back guarantee",
-    description: "Quality checked by our team",
-    icon: <ShieldCheck size={45} />,
+    _id: "4",
+    name: "Xiaomi",
+    slug: { current: "xiaomi" },
+    image: "/images/brands/brand_4.png",
+    productCount: 10
   },
+  {
+    _id: "5",
+    name: "Google",
+    slug: { current: "google" },
+    image: "/images/brands/brand_5.png",
+    productCount: 6
+  },
+  {
+    _id: "6",
+    name: "Nothing",
+    slug: { current: "nothing" },
+    image: "/images/brands/brand_6.png",
+    productCount: 4
+  }
 ];
 
-const ShopByBrands = async () => {
-  const brands = await getAllBrands();
+const ShopByBrands = () => {
   return (
-    <div className="mb-10 lg:mb-20 bg-shop_light_bg p-5 lg:p-7 rounded-md">
-      <div className="flex items-center gap-5 justify-between mb-10">
-        <Title>Shop By Brands</Title>
-        <Link
-          href={"/shop"}
-          className="text-sm font-semibold tracking-wide hover:text-shop_btn_dark_green hoverEffect"
-        >
-          View all
-        </Link>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2.5">
-        {brands?.map((brand) => (
+    <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">
+      <Title className="border-b pb-3">Shop by Brands</Title>
+      <div className="mt-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+        {mockBrands.map((brand) => (
           <Link
-            key={brand?._id}
-            href={{ pathname: "/shop", query: { brand: brand?.slug?.current } }}
-            className="bg-white w-34 h-24 flex items-center justify-center rounded-md overflow-hidden hover:shadow-lg shadow-shop_dark_green/20 hoverEffect"
+            key={brand._id}
+            href={`/brand/${brand.slug.current}`}
+            className="group"
           >
-            {brand?.image && (
-              <Image
-                src={urlFor(brand?.image).url()}
-                alt="brandImage"
-                width={250}
-                height={250}
-                className="w-32 h-20 object-contain"
-              />
-            )}
-          </Link>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16 p-2 shadow-sm hover:shadow-shop_light_green/20 py-5">
-        {extraData?.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-3 group text-lightColor hover:text-shop_light_green"
-          >
-            <span className="inline-flex scale-100 group-hover:scale-90 hoverEffect">
-              {item?.icon}
-            </span>
-            <div className="text-sm">
-              <p className="text-darkColor/80 font-bold capitalize">
-                {item?.title}
-              </p>
-              <p className="text-lightColor">{item?.description}</p>
+            <div className="bg-shop_light_bg p-4 rounded-lg hover:shadow-md transition-all duration-300 hover:scale-105">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-16 h-16 overflow-hidden">
+                  <Image
+                    src={brand.image}
+                    alt={brand.name}
+                    width={64}
+                    height={64}
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="font-semibold text-gray-800 text-sm">{brand.name}</h3>
+                  <p className="text-xs text-gray-500">{brand.productCount} products</p>
+                </div>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -1,15 +1,16 @@
-import { Product } from "@/sanity.types";
 import useStore from "@/store";
 import React from "react";
 import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { Product } from "@/types/product";
 
 interface Props {
   product: Product;
   className?: string;
 }
+
 const QuantityButtons = ({ product, className }: Props) => {
   const { addItem, removeItem, getItemCount } = useStore();
   const itemCount = getItemCount(product?._id);

@@ -1,21 +1,19 @@
 "use server";
 
 import stripe from "@/lib/stripe";
-import { Address } from "@/sanity.types";
-import { urlFor } from "@/sanity/lib/image";
 import { CartItem } from "@/store";
 import Stripe from "stripe";
+import { Product } from "@/types/product";
 
 export interface Metadata {
   orderNumber: string;
   customerName: string;
   customerEmail: string;
-  clerkUserId?: string;
-  address?: Address | null;
+  address?: string;
 }
 
 export interface GroupedCartItems {
-  product: CartItem["product"];
+  product: Product;
   quantity: number;
 }
 
@@ -36,8 +34,7 @@ export async function createCheckoutSession(
         orderNumber: metadata.orderNumber,
         customerName: metadata.customerName,
         customerEmail: metadata.customerEmail,
-        clerkUserId: metadata.clerkUserId!,
-        address: JSON.stringify(metadata.address),
+        address: metadata.address || "",
       },
       mode: "payment",
       allow_promotion_codes: true,
@@ -51,15 +48,15 @@ export async function createCheckoutSession(
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
       line_items: items?.map((item) => ({
         price_data: {
-          currency: "USD",
-          unit_amount: Math.round(item?.product?.price! * 100),
+          currency: "INR",
+          unit_amount: Math.round(item?.product?.sellingPrice! * 100),
           product_data: {
             name: item?.product?.name || "Unknown Product",
-            description: item?.product?.description,
+            description: `${item?.product?.brand} - ${item?.product?.specifications?.ram} RAM, ${item?.product?.specifications?.storage} Storage`,
             metadata: { id: item?.product?._id },
             images:
-              item?.product?.images && item?.product?.images?.length > 0
-                ? [urlFor(item?.product?.images[0]).url()]
+              item?.product?.imageUrls && item?.product?.imageUrls?.length > 0
+                ? [item?.product?.imageUrls[0]]
                 : undefined,
           },
         },

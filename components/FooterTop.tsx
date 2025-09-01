@@ -10,7 +10,7 @@ interface ContactItemData {
 const data: ContactItemData[] = [
   {
     title: "Visit Us",
-    subtitle: `${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL}, near old nokia care book market, beliganj, Raebareli, Uttar Pradesh 229001`,
+    subtitle: "Jain Mobile City, near old nokia care book market, beliganj, Raebareli, Uttar Pradesh 229001",
     icon: (
       <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
     ),

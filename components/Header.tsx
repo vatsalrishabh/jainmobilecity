@@ -9,31 +9,25 @@ import CartIcon from "./CartIcon";
 import FavoriteButton from "./FavoriteButton";
 import SignIn from "./SignIn";
 import MobileMenu from "./MobileMenu";
-import { useAuth, useUser } from "@clerk/nextjs";
-import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { Logs } from "lucide-react";
-import { getMyOrders } from "@/sanity/queries";
 
 const Header = () => {
-  const { userId } = useAuth();
-  const { user } = useUser();
-  const [orders, setOrders] = useState<any[] | null>(null);
+  const [orders, setOrders] = useState<Array<{ _id: string; [key: string]: unknown }> | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (userId) {
-        try {
-          const ordersData = await getMyOrders(userId);
-          setOrders(ordersData);
-        } catch (error) {
-          console.error("Error fetching orders:", error);
-        }
-      }
-    };
-
-    fetchOrders();
-  }, [userId]);
+    // Mock data for development - replace with actual API call when using Mongoose
+    const mockOrders = [
+      { _id: "1", status: "completed" },
+      { _id: "2", status: "pending" },
+      { _id: "3", status: "shipped" }
+    ];
+    setOrders(mockOrders);
+    
+    // Mock authentication state
+    setIsLoggedIn(true);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 py-5 bg-white/70 backdrop-blur-md">
@@ -48,7 +42,7 @@ const Header = () => {
           <CartIcon />
           <FavoriteButton />
 
-          {user && (
+          {isLoggedIn && (
             <Link
               href={"/orders"}
               className="group relative hover:text-shop_light_green hoverEffect"
@@ -60,12 +54,7 @@ const Header = () => {
             </Link>
           )}
 
-          <ClerkLoaded>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            {!user && <SignIn />}
-          </ClerkLoaded>
+          {!isLoggedIn && <SignIn />}
         </div>
       </Container>
     </header>

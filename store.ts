@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "./sanity.types";
+import { Product } from "@/types/product";
 
 export interface CartItem {
   product: Product;
@@ -68,16 +68,14 @@ const useStore = create<StoreState>()(
       resetCart: () => set({ items: [] }),
       getTotalPrice: () => {
         return get().items.reduce(
-          (total, item) => total + (item.product.price ?? 0) * item.quantity,
+          (total, item) => total + (item.product.sellingPrice ?? 0) * item.quantity,
           0
         );
       },
       getSubTotalPrice: () => {
         return get().items.reduce((total, item) => {
-          const price = item.product.price ?? 0;
-          const discount = ((item.product.discount ?? 0) * price) / 100;
-          const discountedPrice = price + discount;
-          return total + discountedPrice * item.quantity;
+          const price = item.product.sellingPrice ?? 0;
+          return total + price * item.quantity;
         }, 0);
       },
       getItemCount: (productId) => {

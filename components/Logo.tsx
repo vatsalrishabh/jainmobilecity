@@ -17,14 +17,14 @@ const Logo = ({
           className
         )}
       >
-      {process.env.NEXT_PUBLIC_APP_NAME}
+        Jain Mobile City
         <span
           className={cn(
             "text-shop_light_green group-hover:text-shop_dark_green hoverEffect",
             spanDesign
           )}
         >
-      {process.env.NEXT_PUBLIC_}
+          Store
         </span>
       </h2>
     </Link>

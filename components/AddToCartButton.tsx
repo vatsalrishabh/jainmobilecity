@@ -1,5 +1,4 @@
 "use client";
-import { Product } from "@/sanity.types";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
@@ -7,6 +6,7 @@ import useStore from "@/store";
 import toast from "react-hot-toast";
 import PriceFormatter from "./PriceFormatter";
 import QuantityButtons from "./QuantityButtons";
+import { Product } from "@/types/product";
 
 interface Props {
   product: Product;
@@ -28,6 +28,7 @@ const AddToCartButton = ({ product, className }: Props) => {
       toast.error("Can not add more than available stock");
     }
   };
+  
   return (
     <div className="w-full h-12 flex items-center">
       {itemCount ? (
@@ -39,7 +40,7 @@ const AddToCartButton = ({ product, className }: Props) => {
           <div className="flex items-center justify-between border-t pt-1">
             <span className="text-xs font-semibold">Subtotal</span>
             <PriceFormatter
-              amount={product?.price ? product?.price * itemCount : 0}
+              amount={product?.sellingPrice ? product?.sellingPrice * itemCount : 0}
             />
           </div>
         </div>

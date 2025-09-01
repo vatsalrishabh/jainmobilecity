@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Product } from '../../sanity.types';
+import { Product } from '@/types/product';
 
 interface ProductsState {
   items: Product[];
@@ -39,7 +39,7 @@ const productsSlice = createSlice({
         state.filteredItems = [...state.items];
       } else {
         state.filteredItems = state.items.filter(
-          (p) => p.brand?._ref === action.payload
+          (p) => p.brand === action.payload
         );
       }
     },
@@ -47,28 +47,35 @@ const productsSlice = createSlice({
     // ✅ Filter by Price Range
     filterByPriceRange(state, action: PayloadAction<{ min: number; max: number }>) {
       state.filteredItems = state.filteredItems.filter(
-        (p) => p.price && p.price >= action.payload.min && p.price <= action.payload.max
+        (p) => p.sellingPrice && p.sellingPrice >= action.payload.min && p.sellingPrice <= action.payload.max
       );
     },
 
     // ✅ Sort by Price Low → High
     sortByPriceLowHigh(state) {
       state.filteredItems = [...state.filteredItems].sort(
-        (a, b) => (a.price || 0) - (b.price || 0)
+        (a, b) => (a.sellingPrice || 0) - (b.sellingPrice || 0)
       );
     },
 
     // ✅ Sort by Price High → Low
     sortByPriceHighLow(state) {
       state.filteredItems = [...state.filteredItems].sort(
-        (a, b) => (b.price || 0) - (a.price || 0)
+        (a, b) => (b.sellingPrice || 0) - (a.sellingPrice || 0)
       );
     },
 
-    // ✅ Sort by Newest First
-    sortByNewest(state) {
+    // ✅ Sort by Name A-Z
+    sortByNameAZ(state) {
       state.filteredItems = [...state.filteredItems].sort(
-        (a, b) => new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime()
+        (a, b) => a.name.localeCompare(b.name)
+      );
+    },
+
+    // ✅ Sort by Name Z-A
+    sortByNameZA(state) {
+      state.filteredItems = [...state.filteredItems].sort(
+        (a, b) => b.name.localeCompare(a.name)
       );
     },
 
@@ -100,7 +107,8 @@ export const {
   filterByPriceRange,
   sortByPriceLowHigh,
   sortByPriceHighLow,
-  sortByNewest,
+  sortByNameAZ,
+  sortByNameZA,
   resetFilters,
 } = productsSlice.actions;
 

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: {
-    template: `%s - ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store`,
-    default: ` ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store`,
+    template: `%s - Jain Mobile City Online Store`,
+    default: `Jain Mobile City - Your One Stop Shop for Mobile Phones`,
   },
-  description: ` ${process.env.NEXT_NEXT_PUBLIC_APP_NAME_FULL} online store, Your one stop shop for all your needs`,
+  description: `Jain Mobile City online store - Your one stop shop for all your mobile phone needs`,
 };
 
 export default function RootLayout({
@@ -17,12 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </div>
-    </ClerkProvider>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
   );
 }

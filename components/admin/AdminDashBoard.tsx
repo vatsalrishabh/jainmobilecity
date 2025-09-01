@@ -6,16 +6,20 @@ import RightSideDisplay from './RightSideDisplay';
 import AllUsers from './AllUsers';
 import AllSales from './AllSales';
 import CRUDProducts from './CRUDProducts';
+import Dashboard from './Dashboard';
 
 const AdminDashBoard = () => {
   const componentMapping: Record<string, JSX.Element> = {
+    dashboard: <Dashboard />,
     crudOperation: <CRUDProducts />,
     allUser: <AllUsers />,
     allSales: <AllSales />,
+    analytics: <div className="p-6 text-center text-gray-500">Analytics Dashboard - Coming Soon</div>,
+    settings: <div className="p-6 text-center text-gray-500">Settings Panel - Coming Soon</div>,
   };
 
   const [rightComponent, setRightCom] = useState<JSX.Element>(
-    componentMapping.crudOperation
+    componentMapping.dashboard
   );
 
   const changeChildComponent = (key: string) => {
@@ -23,7 +27,7 @@ const AdminDashBoard = () => {
       setRightCom(componentMapping[key]);
     }
   };
-console.log(rightComponent)
+
   return (
     <div className='lg:flex'>
       <div className='lg:block'>

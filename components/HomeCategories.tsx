@@ -1,9 +1,16 @@
 import React from "react";
 import Title from "./Title";
-import { Category } from "@/sanity.types";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+
+// Define a simple Category interface for mock data
+interface Category {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  image: string;
+  productCount: number;
+}
 
 const HomeCategories = ({ categories }: { categories: Category[] }) => {
   return (
@@ -19,7 +26,7 @@ const HomeCategories = ({ categories }: { categories: Category[] }) => {
               <div className="overflow-hidden border border-shop_orange/30 hover:border-shop_orange hoverEffect w-20 h-20 p-1">
                 <Link href={`/category/${category?.slug?.current}`}>
                   <Image
-                    src={urlFor(category?.image).url()}
+                    src={category?.image}
                     alt="categoryImage"
                     width={500}
                     height={500}

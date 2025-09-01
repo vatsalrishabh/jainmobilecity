@@ -2,70 +2,77 @@
 
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { motion, AnimatePresence } from "motion/react";
-import { client } from "@/sanity/lib/client";
-import NoProductAvailable from "./NoProductAvailable";
-import { Loader2 } from "lucide-react";
-import Container from "./Container";
-import HomeTabbar from "./HomeTabbar";
-import { productType } from "@/constants/data";
-import { Product } from "@/sanity.types";
+import Title from "./Title";
+import { Product } from "@/types/product";
+
+// Mock data for development
+const mockProducts: Product[] = [
+  {
+    _id: "1",
+    name: "iPhone 15 Pro",
+    brand: "Apple",
+    sellingPrice: 89999,
+    costPrice: 75000,
+    stock: 25,
+    imageUrls: ["/images/products/product_1.png"],
+    specifications: {
+      ram: "8GB",
+      storage: "256GB"
+    }
+  },
+  {
+    _id: "2",
+    name: "Samsung Galaxy S24",
+    brand: "Samsung", 
+    sellingPrice: 79999,
+    costPrice: 68000,
+    stock: 30,
+    imageUrls: ["/images/products/product_2.jpg"],
+    specifications: {
+      ram: "12GB",
+      storage: "128GB"
+    }
+  },
+  {
+    _id: "3",
+    name: "OnePlus 12",
+    brand: "OnePlus",
+    sellingPrice: 59999,
+    costPrice: 52000,
+    stock: 20,
+    imageUrls: ["/images/products/product_3.png"],
+    specifications: {
+      ram: "16GB",
+      storage: "256GB"
+    }
+  },
+  {
+    _id: "4",
+    name: "Xiaomi 14",
+    brand: "Xiaomi",
+    sellingPrice: 49999,
+    costPrice: 42000,
+    stock: 35,
+    imageUrls: ["/images/products/product_4.png"],
+    specifications: {
+      ram: "8GB",
+      storage: "128GB"
+    }
+  }
+];
 
 const ProductGrid = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
-  const query = `*[_type == "product" && variant == $variant] | order(name asc){
-  ...,"categories": categories[]->title
-}`;
-  const params = { variant: selectedTab.toLowerCase() };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await client.fetch(query, params);
-        setProducts(await response);
-      } catch (error) {
-        console.log("Product fetching Error", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [selectedTab]);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
 
   return (
-    <Container className="flex flex-col lg:px-0 my-10">
-      <HomeTabbar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
-          <motion.div className="flex items-center space-x-2 text-blue-600">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Product is loading...</span>
-          </motion.div>
-        </div>
-      ) : products?.length ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 mt-10">
-          <>
-            {products?.map((product) => (
-              <AnimatePresence key={product?._id}>
-                <motion.div
-                  layout
-                  initial={{ opacity: 0.2 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <ProductCard key={product?._id} product={product} />
-                </motion.div>
-              </AnimatePresence>
-            ))}
-          </>
-        </div>
-      ) : (
-        <NoProductAvailable selectedTab={selectedTab} />
-      )}
-    </Container>
+    <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">
+      <Title className="border-b pb-3">Featured Products</Title>
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {products.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+    </div>
   );
 };
 

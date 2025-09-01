@@ -1,48 +1,37 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import Logo from "./Logo";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import { Button } from "./ui/button";
+import { Lock, LogIn, UserPlus } from "lucide-react";
+import Link from "next/link";
 
-const NoAccess = ({
-  details = "Log in to view your cart items and checkout. Don't miss out on your favorite products!",
-}: {
-  details?: string;
-}) => {
+const NoAccess = () => {
   return (
-    <div className="flex items-center justify-center py-12 md:py-32 bg-gray-100 p-4">
-      <Card className="w-full max-w-md p-5">
-        <CardHeader className="flex items-center flex-col">
-          <Logo />
-          <CardTitle className="text-2xl font-bold text-center">
-            Welcome Back!
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center font-medium text-darkColor/80">{details}</p>
-          <SignInButton mode="modal">
-            <Button className="w-full" size="lg">
-              Sign in
-            </Button>
-          </SignInButton>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-muted-foreground text-center">
-            Don&rsquo;t have an account?
-          </div>
-          <SignUpButton mode="modal">
-            <Button variant="outline" className="w-full" size="lg">
-              Create an account
-            </Button>
-          </SignUpButton>
-        </CardFooter>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-red-600" />
+        </div>
+        
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Access Denied</h1>
+        <p className="text-gray-600 mb-6">
+          You don't have permission to access this page. Please sign in with appropriate credentials.
+        </p>
+        
+        <div className="space-y-3">
+          <Link
+            href="/admin"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            <LogIn size={20} />
+            Go to Admin
+          </Link>
+          
+          <Link
+            href="/"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
