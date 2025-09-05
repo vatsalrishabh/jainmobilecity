@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -16,7 +16,6 @@ import {
   DialogActions,
   IconButton,
   Chip,
-  Avatar,
   FormControl,
   InputLabel,
   Select,
@@ -25,42 +24,32 @@ import {
   Alert,
   Snackbar,
   CircularProgress,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
 } from "@mui/material";
 import {
   Add,
   Search,
-  FilterList,
   Sort,
-  Visibility,
   Inventory,
   AttachMoney,
-  Category,
   BrandingWatermark,
   Edit,
   Delete,
   CloudUpload,
-  Image,
   Close,
-  Save,
-  Cancel,
 } from "@mui/icons-material";
 import { Product } from "@/types/product";
+import Image from "next/image";
 
 interface CRUDProductsProps {
   changeRightComponent: (component: string) => void;
 }
 
-const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => {
+const CRUDProducts: React.FC<CRUDProductsProps> = ({ }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  // const [categoryFilter, setCategoryFilter] = useState("all");
   const [brandFilter, setBrandFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -98,7 +87,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
   const [uploadingImages, setUploadingImages] = useState(false);
 
   // Fetch products from API
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/products");
@@ -115,11 +104,11 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   // Filter and sort products
   useEffect(() => {
@@ -142,8 +131,8 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
 
     // Apply sorting
     filtered.sort((a, b) => {
-      let aValue: any = a[sortBy as keyof Product];
-      let bValue: any = b[sortBy as keyof Product];
+      let aValue: string | number = a[sortBy as keyof Product] as string | number;
+      let bValue: string | number = b[sortBy as keyof Product] as string | number;
 
       if (typeof aValue === "string") {
         aValue = aValue.toLowerCase();
@@ -558,7 +547,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                 <CardContent className="p-4">
                   {/* Product Image */}
                   <Box className="relative mb-4">
-                    <img
+                    <Image
                       src={product.imageUrls[0] || "/images/emptyCart.png"}
                       alt={product.name}
                       className="w-full h-48 object-cover rounded-lg"
@@ -673,8 +662,8 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
         <DialogTitle className="bg-blue-50">
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" className="font-semibold">
-              Add New Product
-            </Typography>
+        Add New Product
+      </Typography>
             <IconButton onClick={() => setIsAddDialogOpen(false)}>
               <Close />
             </IconButton>
@@ -724,7 +713,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
               <Typography variant="h6" className="mb-3">
                 Specifications
               </Typography>
-              <Grid container spacing={2}>
+        <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
@@ -787,9 +776,9 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
             </Grid>
 
             {/* Pricing and Stock */}
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
                 label="Cost Price *"
                 type="number"
                 value={form.costPrice}
@@ -798,38 +787,38 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                   startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                 }}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
                 label="Selling Price *"
-                type="number"
+              type="number"
                 value={form.sellingPrice}
                 onChange={(e) => handleInputChange("sellingPrice", e.target.value)}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                 }}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
                 label="Stock *"
                 type="number"
                 value={form.stock}
                 onChange={(e) => handleInputChange("stock", e.target.value)}
                 required
-              />
-            </Grid>
+            />
+          </Grid>
 
             {/* Image Upload */}
-            <Grid item xs={12}>
+          <Grid item xs={12}>
               <Typography variant="h6" className="mb-3">
                 Product Images
-              </Typography>
-              
+      </Typography>
+
               <Box className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <input
                   type="file"
@@ -868,7 +857,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                     {form.imageUrls.map((url, index) => (
                       <Grid item key={index}>
                         <Box className="relative">
-                          <img
+                          <Image
                             src={url}
                             alt={`Product ${index + 1}`}
                             className="w-20 h-20 object-cover rounded-lg"
@@ -879,7 +868,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                             className="absolute -top-2 -right-2 bg-red-500 text-white hover:bg-red-600"
                           >
                             <Close fontSize="small" />
-                          </IconButton>
+                  </IconButton>
                         </Box>
                       </Grid>
                     ))}
@@ -922,10 +911,10 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
           {/* Same form fields as Add Dialog */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
+            <TextField
+              fullWidth
                 label="Product Name *"
-                value={form.name}
+              value={form.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 required
               />
@@ -940,18 +929,18 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
+            <TextField
+              fullWidth
                 label="Model Number"
                 value={form.modelNumber}
                 onChange={(e) => handleInputChange("modelNumber", e.target.value)}
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Description"
-                value={form.description}
+            <TextField
+              fullWidth
+              label="Description"
+              value={form.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
                 multiline
                 rows={2}
@@ -1107,9 +1096,11 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                     {form.imageUrls.map((url, index) => (
                       <Grid item key={index}>
                         <Box className="relative">
-                          <img
+                          <Image
                             src={url}
                             alt={`Product ${index + 1}`}
+                            width={80}
+                            height={80}
                             className="w-20 h-20 object-cover rounded-lg"
                           />
                           <IconButton
@@ -1123,7 +1114,7 @@ const CRUDProducts: React.FC<CRUDProductsProps> = ({ changeRightComponent }) => 
                       </Grid>
                     ))}
                   </Grid>
-                </Box>
+          </Box>
               )}
             </Grid>
           </Grid>

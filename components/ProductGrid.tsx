@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ProductCard from "./ProductCard";
 import Title from "./Title";
 import { Product } from "@/types/product";
@@ -62,7 +62,7 @@ const mockProducts: Product[] = [
 ];
 
 const ProductGrid = () => {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products] = useState<Product[]>(mockProducts);
 
   return (
     <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">

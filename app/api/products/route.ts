@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
-import { Product } from '@/types/product';
+//import { Product } from '@/types/product';
 
 // Connect to MongoDB
 const connectDB = async () => {

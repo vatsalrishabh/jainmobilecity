@@ -10,18 +10,18 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 // Mock user data for development
-const mockUser = {
-  _id: "1",
-  name: "Demo User",
-  email: "demo@example.com",
-  mobile: "9876543210",
-  address: "123 Demo Street, Demo City"
-};
+// const mockUser = {
+//   _id: "1",
+//   name: "Demo User",
+//   email: "demo@example.com",
+//   mobile: "9876543210",
+//   address: "123 Demo Street, Demo City"
+// };
 
 const Cart = () => {
   const router = useRouter();
-  const { items, getTotalPrice, getItemCount, addItem, removeItem, deleteCartProduct, resetCart } = useStore();
-  const [user, setUser] = useState(mockUser);
+  const { items, getTotalPrice, getItemCount, addItem,  deleteCartProduct, resetCart } = useStore();
+  //const [user, setUser] = useState(mockUser);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
