@@ -10,7 +10,7 @@ import Link from "next/link";
 const SuccessPageContent = () => {
   const { resetCart } = useStore();
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("orderNumber");
+  const orderNumber = searchParams.get("orderNumber") || searchParams.get("orderId");
 
   useEffect(() => {
     if (orderNumber) {
@@ -44,7 +44,7 @@ const SuccessPageContent = () => {
             be sent to your inbox shortly.
           </p>
           <p className="text-gray-700">
-            Order Number:{" "}
+            Order ID:{" "}
             <span className="text-black font-semibold">{orderNumber}</span>
           </p>
         </div>

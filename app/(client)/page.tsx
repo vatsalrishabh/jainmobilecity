@@ -39,7 +39,9 @@ const Home = async () => {
   return (
     <Container className="bg-shop-light-pink">
       <HomeBanner />
-      <ProductGrid />
+      <div className="px-4 lg:px-8">
+        <ProductGrid />
+      </div>
       <HomeCategories categories={categories} />
       <ShopByBrands />
       <LatestBlog />

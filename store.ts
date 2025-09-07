@@ -31,13 +31,14 @@ const useStore = create<StoreState>()(
       favoriteProduct: [],
       addItem: (product) =>
         set((state) => {
+          const productId = product._id || product.id;
           const existingItem = state.items.find(
-            (item) => item.product._id === product._id
+            (item) => (item.product._id || item.product.id) === productId
           );
           if (existingItem) {
             return {
               items: state.items.map((item) =>
-                item.product._id === product._id
+                (item.product._id || item.product.id) === productId
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
@@ -49,7 +50,7 @@ const useStore = create<StoreState>()(
       removeItem: (productId) =>
         set((state) => ({
           items: state.items.reduce((acc, item) => {
-            if (item.product._id === productId) {
+            if (item.product._id === productId || item.product.id === productId) {
               if (item.quantity > 1) {
                 acc.push({ ...item, quantity: item.quantity - 1 });
               }
@@ -62,7 +63,7 @@ const useStore = create<StoreState>()(
       deleteCartProduct: (productId) =>
         set((state) => ({
           items: state.items.filter(
-            ({ product }) => product?._id !== productId
+            ({ product }) => product?._id !== productId && product?.id !== productId
           ),
         })),
       resetCart: () => set({ items: [] }),
@@ -116,5 +117,22 @@ const useStore = create<StoreState>()(
     }
   )
 );
+
+// Custom hook for cart items with selector to prevent unnecessary re-renders
+export const useCartItem = (productId: string) => {
+  return useStore((state) => {
+    const item = state.items.find((item) => item.product._id === productId || item.product.id === productId);
+    return item?.quantity || 0;
+  });
+};
+
+// Custom hook for favorite products with selector
+export const useFavoriteItem = (productId: string) => {
+  return useStore((state) => state.favoriteProduct?.find((item) => item._id === productId || item.id === productId) || null);
+};
+
+export const useFavoriteCount = () => {
+  return useStore((state) => state.favoriteProduct?.length || 0);
+};
 
 export default useStore;

@@ -7,6 +7,8 @@ import AllUsers from "./AllUsers";
 import AllSales from "./AllSales";
 import CRUDProducts from "./CRUDProducts";
 import Dashboard from "./Dashboard";
+import SalesDashboard from "./SalesDashboard";
+import UserManagement from "./UserManagement";
 import AdminLogin from "./AdminLogin";
 
 const AdminDashBoard = () => {
@@ -18,6 +20,8 @@ const AdminDashBoard = () => {
     const componentMapping: Record<string, JSX.Element> = {
       dashboard: <Dashboard />,
       crudOperation: <CRUDProducts changeRightComponent={changeChildComponent} />, // ✅ pass prop here
+      salesDashboard: <SalesDashboard />,
+      userManagement: <UserManagement />,
       allUser: <AllUsers />,
       allSales: <AllSales />,
       analytics: (

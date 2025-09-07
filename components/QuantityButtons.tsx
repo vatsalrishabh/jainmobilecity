@@ -12,16 +12,20 @@ interface Props {
 }
 
 const QuantityButtons = ({ product, className }: Props) => {
-  const { addItem, removeItem, getItemCount } = useStore();
-  const itemCount = getItemCount(product?._id);
+  const { addItem, removeItem, items } = useStore();
+  const productId = product?._id || product?.id;
+  const itemCount = items.find((item) => (item.product._id || item.product.id) === productId)?.quantity || 0;
   const isOutOfStock = product?.stock === 0;
 
   const handleRemoveProduct = () => {
-    removeItem(product?._id);
-    if (itemCount > 1) {
-      toast.success("Quantity Decreased successfully!");
-    } else {
-      toast.success(`${product?.name?.substring(0, 12)} removed successfully!`);
+    const productId = product?._id || product?.id;
+    if (productId) {
+      removeItem(productId);
+      if (itemCount > 1) {
+        toast.success("Quantity Decreased successfully!");
+      } else {
+        toast.success(`${product?.name?.substring(0, 12)} removed successfully!`);
+      }
     }
   };
 

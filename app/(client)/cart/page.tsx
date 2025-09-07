@@ -57,7 +57,17 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (isLoggedIn) {
-      router.push("/checkout");
+      // Store cart data in localStorage for checkout page
+      const checkoutData = {
+        from: 'cart',
+        items: items,
+        totalPrice: getTotalPrice(),
+        itemCount: items.length
+      };
+      localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+
+      // Navigate to checkout page
+      router.push("/checkout?from=cart");
     } else {
       router.push("/admin");
     }

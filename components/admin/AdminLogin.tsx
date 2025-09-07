@@ -3,8 +3,14 @@ import React, { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"; // nice icons
 import Link from "next/link";
 
-const AdminLogin = () => {
+const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simple login - in a real app, you'd validate credentials
+    onLogin();
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-100 p-4">
@@ -21,7 +27,7 @@ const AdminLogin = () => {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={handleLogin} className="space-y-5">
           {/* Email */}
           <div>
             <label

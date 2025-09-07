@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -31,68 +31,76 @@ import {
   Star,
 } from "@mui/icons-material";
 
+interface RecentOrder {
+  id: string;
+  customer: string;
+  amount: number;
+  status: string;
+  date: string;
+  products: string[];
+}
+
+interface TopProduct {
+  name: string;
+  sales: number;
+  revenue: number;
+  rating: number;
+  image: string;
+}
+
 const Dashboard = () => {
-  const [recentOrders] = useState([
-    {
-      id: "1",
-      customer: "John Doe",
-      amount: 114998,
-      status: "completed",
-      date: "2 hours ago",
-      products: ["iPhone 15 Pro", "AirPods Pro"],
-    },
-    {
-      id: "2",
-      customer: "Jane Smith",
-      amount: 79999,
-      status: "shipped",
-      date: "4 hours ago",
-      products: ["Samsung Galaxy S24"],
-    },
-    {
-      id: "3",
-      customer: "Mike Johnson",
-      amount: 68998,
-      status: "pending",
-      date: "6 hours ago",
-      products: ["OnePlus 12", "OnePlus Buds"],
-    },
-  ]);
-
-  const [topProducts] = useState([
-    {
-      name: "iPhone 15 Pro",
-      sales: 45,
-      revenue: 4049955,
-      rating: 4.8,
-      image: "/images/products/product_1.png",
-    },
-    {
-      name: "Samsung Galaxy S24",
-      sales: 38,
-      revenue: 3039962,
-      rating: 4.6,
-      image: "/images/products/product_2.jpg",
-    },
-    {
-      name: "OnePlus 12",
-      sales: 32,
-      revenue: 1919968,
-      rating: 4.7,
-      image: "/images/products/product_3.png",
-    },
-  ]);
-
-  const [stats] = useState({
-    totalRevenue: 9001885,
-    totalOrders: 156,
-    totalCustomers: 89,
-    totalProducts: 24,
-    monthlyGrowth: 12.5,
-    orderGrowth: 8.3,
-    customerGrowth: 15.2,
-    productGrowth: 6.8,
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    totalProducts: 0,
+    monthlyGrowth: 0,
+    orderGrowth: 0,
+    customerGrowth: 0,
+    productGrowth: 0,
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch stats
+        const statsResponse = await fetch('/api/admin/stats', {
+          cache: 'no-store'
+        });
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setStats(statsData);
+        }
+
+        // Fetch recent orders
+        const ordersResponse = await fetch('/api/admin/orders/recent', {
+          cache: 'no-store'
+        });
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          setRecentOrders(ordersData);
+        }
+
+        // Fetch top products
+        const productsResponse = await fetch('/api/admin/products/top', {
+          cache: 'no-store'
+        });
+        if (productsResponse.ok) {
+          const productsData = await productsResponse.json();
+          setTopProducts(productsData);
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -119,6 +127,19 @@ const Dashboard = () => {
         return <AccessTime fontSize="small" />;
     }
   };
+
+  if (loading) {
+    return (
+      <Box className="bg-gray-50 min-h-screen p-6 flex items-center justify-center">
+        <Box className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <Typography variant="h6" className="text-gray-600">
+            Loading dashboard data...
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box className="bg-gray-50 min-h-screen p-6">

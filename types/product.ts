@@ -1,6 +1,7 @@
 // src/types/product.ts
 export interface Product {
   _id: string;
+  id?: string; // API returns id, frontend uses _id
   name: string;
   brand: string;
   modelNumber?: string;
