@@ -239,7 +239,14 @@ const CheckoutContent = ({ searchParams }: { searchParams?: { productId?: string
         },
       };
 
-      const razorpay = new (window as { Razorpay: { new (options: Record<string, unknown>): unknown } }).Razorpay(options);
+      // Type assertion for Razorpay
+      const RazorpayConstructor = (window as { Razorpay?: new (options: Record<string, unknown>) => unknown }).Razorpay;
+      if (!RazorpayConstructor) {
+        toast.error('Razorpay is not loaded. Please refresh the page.');
+        return;
+      }
+
+      const razorpay = new RazorpayConstructor(options);
 
       // Handle payment failure
       razorpay.on('payment.failed', function (response: { error: { description: string } }) {

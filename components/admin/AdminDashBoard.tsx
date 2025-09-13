@@ -14,10 +14,10 @@ import AdminLogin from "./AdminLogin";
 const AdminDashBoard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
-  const [rightComponent, setRightCom] = useState<JSX.Element>(<Dashboard />);
+  const [rightComponent, setRightCom] = useState<React.ReactElement>(<Dashboard />);
 
   const changeChildComponent = (key: string) => {
-    const componentMapping: Record<string, JSX.Element> = {
+    const componentMapping: Record<string, React.ReactElement> = {
       dashboard: <Dashboard />,
       crudOperation: <CRUDProducts changeRightComponent={changeChildComponent} />, // ✅ pass prop here
       salesDashboard: <SalesDashboard />,

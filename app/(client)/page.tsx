@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import HomeBanner from "@/components/HomeBanner";
 import HomeCategories from "@/components/HomeCategories";
-import LatestBlog from "@/components/LatestBlog";
+import About from "@/components/About";
 import ProductGrid from "@/components/ProductGrid";
 import ShopByBrands from "@/components/ShopByBrands";
 
@@ -37,15 +37,22 @@ const Home = async () => {
   const categories = mockCategories;
 
   return (
-    <Container className="bg-shop-light-pink">
-      <HomeBanner />
-      <div className="px-4 lg:px-8">
+    <div className="bg-gradient-to-br from-gray-50 to-white">
+      <Container>
+        <HomeBanner />
+      </Container>
+
+      {/* Featured Products Section */}
+      <div className="py-8">
         <ProductGrid />
       </div>
-      <HomeCategories categories={categories} />
-      <ShopByBrands />
-      <LatestBlog />
-    </Container>
+
+      <Container>
+        <HomeCategories categories={categories} />
+        <ShopByBrands />
+        <About />
+      </Container>
+    </div>
   );
 };
 

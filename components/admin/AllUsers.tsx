@@ -72,7 +72,7 @@ const AllUsers = () => {
       <Grid container spacing={3}>
         {filteredUsers.map((user) => (
           <UserCard
-            key={user._id}
+            key={user._id?.toString() || user.email}
             user={user}
             getProviderColor={getProviderColor}
             getProviderIcon={getProviderIcon}

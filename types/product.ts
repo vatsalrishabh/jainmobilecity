@@ -6,9 +6,9 @@ export interface Product {
   brand: string;
   modelNumber?: string;
   description?: string;
-  specifications: {
-    ram: string;
-    storage: string;
+  specifications?: {
+    ram?: string;
+    storage?: string;
     processor?: string;
     battery?: string;
     display?: string;

@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } from "react";
 import dynamic from "next/dynamic";
 import Title from "./Title";
-import ProductFilters, { FilterState } from "./ProductFilters";
+import ProductFilters from "./ProductFilters";
+import { FilterState } from "./filters/types";
 import { Product } from "@/types/product";
-import { FilterList } from "@mui/icons-material";
-import { Button, Typography, Chip } from "@mui/material";
+import { Button } from "@mui/material";
 
 // Custom hook for window size management
 const useWindowSize = () => {
@@ -52,6 +52,16 @@ const ProductGrid = React.memo(() => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // Toggle function for filters
+  const toggleFilters = () => {
+    console.log('toggleFilters called - current state:', filtersOpen);
+    setFiltersOpen(prevState => {
+      const newState = !prevState;
+      console.log('toggleFilters - setting to:', newState);
+      return newState;
+    });
+  };
   const { width: windowWidth } = useWindowSize();
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [currentFilters, setCurrentFilters] = useState<FilterState>({
@@ -64,11 +74,19 @@ const ProductGrid = React.memo(() => {
   });
 
   // Handle responsive filter behavior
+  // Close filters only when switching from desktop to mobile, not during normal mobile usage
+  const [prevWindowWidth, setPrevWindowWidth] = useState(windowWidth);
+
   useEffect(() => {
-    if (windowWidth < 1024 && filtersOpen) {
+    const wasDesktop = prevWindowWidth >= 1024;
+    const isNowMobile = windowWidth < 1024;
+
+    if (wasDesktop && isNowMobile && filtersOpen) {
       setFiltersOpen(false);
     }
-  }, [windowWidth, filtersOpen]);
+
+    setPrevWindowWidth(windowWidth);
+  }, [windowWidth, filtersOpen, prevWindowWidth]);
 
   // Cleanup debounce on unmount
   useEffect(() => {
@@ -128,17 +146,17 @@ const ProductGrid = React.memo(() => {
       }
 
       // RAM filter
-      if (currentFilters.ram.length > 0 && !currentFilters.ram.includes(product.specifications.ram)) {
+      if (currentFilters.ram.length > 0 && (!product.specifications?.ram || !currentFilters.ram.includes(product.specifications.ram))) {
         return false;
       }
 
       // Storage filter
-      if (currentFilters.storage.length > 0 && !currentFilters.storage.includes(product.specifications.storage)) {
+      if (currentFilters.storage.length > 0 && (!product.specifications?.storage || !currentFilters.storage.includes(product.specifications.storage))) {
         return false;
       }
 
       // OS filter
-      if (currentFilters.os.length > 0 && (!product.specifications.os || !currentFilters.os.includes(product.specifications.os))) {
+      if (currentFilters.os.length > 0 && (!product.specifications?.os || !currentFilters.os.includes(product.specifications.os))) {
         return false;
       }
 
@@ -214,171 +232,118 @@ const ProductGrid = React.memo(() => {
   }
 
   return (
-    <div className="relative">
-      {/* Filters Sidebar */}
-      <ProductFilters
-        products={products}
-        onFiltersChange={handleFiltersChange}
-        isOpen={filtersOpen}
-        onToggle={() => setFiltersOpen(!filtersOpen)}
-      />
+    <div className="bg-gradient-to-br from-gray-50 to-white min-h-screen">
+      <div className="flex gap-6 px-4 lg:px-8 py-8">
+        {/* Filters Sidebar */}
+        <div className={`w-full lg:w-64 flex-shrink-0 ${filtersOpen ? 'block' : 'hidden lg:block'}`}>
+          <ProductFilters
+            products={products}
+            onFiltersChange={handleFiltersChange}
+            isOpen={filtersOpen}
+            onToggle={toggleFilters}
+          />
+        </div>
 
-      {/* Main Content */}
-      <div className={`transition-all duration-300 ${filtersOpen ? 'lg:ml-72' : ''}`}>
-        <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">
-          {/* Header with Results Count */}
-          <div className="flex items-center justify-between border-b pb-3 mb-4">
-            <div>
-              <Title className="mb-1">Featured Products</Title>
-              <p className="text-sm text-gray-600">
-                {filteredProducts.length} of {products.length} products
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            {/* Header with Results Count and Sort */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <Title className="text-2xl font-bold text-gray-800">
+                  Featured Products ({filteredProducts.length})
+                </Title>
+
+                {/* Active Filters Badge */}
                 {getActiveFilterCount() > 0 && (
-                  <span className="ml-2 text-blue-600">
-                    ({getActiveFilterCount()} filter{getActiveFilterCount() > 1 ? 's' : ''} applied)
-                  </span>
-                )}
-              </p>
-            </div>
-
-            {/* Filter Toggle Button for Mobile */}
-            <Button
-              variant="outlined"
-              startIcon={<FilterList />}
-              onClick={() => setFiltersOpen(true)}
-              className="lg:hidden"
-            >
-              Filters {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}
-            </Button>
-          </div>
-
-          {/* Active Filters Display */}
-          {getActiveFilterCount() > 0 && (
-            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <Typography variant="subtitle2" className="font-medium text-blue-900 mb-2">
-                Active Filters
-              </Typography>
-              <div className="flex flex-wrap gap-2">
-                {currentFilters.brands.map((brand) => (
-                  <Chip
-                    key={brand}
-                    label={`Brand: ${brand}`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    onDelete={() => {
-                      const newBrands = currentFilters.brands.filter(b => b !== brand);
-                      setCurrentFilters(prev => ({ ...prev, brands: newBrands }));
-                    }}
-                  />
-                ))}
-                {currentFilters.ram.map((ram) => (
-                  <Chip
-                    key={ram}
-                    label={`RAM: ${ram}`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    onDelete={() => {
-                      const newRam = currentFilters.ram.filter(r => r !== ram);
-                      setCurrentFilters(prev => ({ ...prev, ram: newRam }));
-                    }}
-                  />
-                ))}
-                {currentFilters.storage.map((storage) => (
-                  <Chip
-                    key={storage}
-                    label={`Storage: ${storage}`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    onDelete={() => {
-                      const newStorage = currentFilters.storage.filter(s => s !== storage);
-                      setCurrentFilters(prev => ({ ...prev, storage: newStorage }));
-                    }}
-                  />
-                ))}
-                {currentFilters.os.map((os) => (
-                  <Chip
-                    key={os}
-                    label={`OS: ${os}`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    onDelete={() => {
-                      const newOs = currentFilters.os.filter(o => o !== os);
-                      setCurrentFilters(prev => ({ ...prev, os: newOs }));
-                    }}
-                  />
-                ))}
-                {currentFilters.inStock && (
-                  <Chip
-                    label="In Stock Only"
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    onDelete={() => setCurrentFilters(prev => ({ ...prev, inStock: false }))}
-                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">
+                      {getActiveFilterCount()} filter{getActiveFilterCount() > 1 ? 's' : ''} applied
+                    </span>
+                    <button
+                      onClick={() => setCurrentFilters({
+                        priceRange: [0, 200000],
+                        brands: [],
+                        ram: [],
+                        storage: [],
+                        os: [],
+                        inStock: false,
+                      })}
+                      className="text-sm text-shop_light_green hover:text-shop_dark_green underline"
+                    >
+                      Clear all
+                    </button>
+                  </div>
                 )}
               </div>
-              <Button
-                size="small"
-                onClick={() => setCurrentFilters({
-                  priceRange: [0, 200000],
-                  brands: [],
-                  ram: [],
-                  storage: [],
-                  os: [],
-                  inStock: false,
-                })}
-                className="mt-2 text-blue-600 hover:text-blue-800"
-              >
-                Clear All Filters
-              </Button>
-        </div>
-          )}
 
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">🔍</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-              <p className="text-gray-500 mb-4">
-                Try adjusting your filters or search criteria
-              </p>
-              {getActiveFilterCount() > 0 && (
-                <Button
-                  variant="outlined"
-                  onClick={() => setCurrentFilters({
-                    priceRange: [0, 200000],
-                    brands: [],
-                    ram: [],
-                    storage: [],
-                    os: [],
-                    inStock: false,
-                  })}
-                >
-                  Clear All Filters
-                </Button>
-              )}
+              {/* Mobile Filter Toggle */}
+              <button
+                onClick={toggleFilters}
+                className="lg:hidden bg-shop_light_green hover:bg-shop_dark_green text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                </svg>
+                Filters
+                {getActiveFilterCount() > 0 && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    {getActiveFilterCount()}
+                  </span>
+                )}
+              </button>
             </div>
-          ) : (
-            <div className={`grid ${gridCols} gap-4`}>
-              {filteredProducts.map((product) => (
-                <Suspense key={`product-${product._id || product.id}`} fallback={
-                  <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden w-full max-w-xs mx-auto animate-pulse">
-                    <div className="h-48 bg-gray-200"></div>
-                    <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 rounded"></div>
-                      <div className="h-6 bg-gray-200 rounded"></div>
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-8 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                }>
-                  <LazyProductCard product={product} />
-                </Suspense>
-              ))}
-            </div>
-          )}
+
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">🔍</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                <p className="text-gray-500 mb-4">
+                  Try adjusting your filters or search criteria
+                </p>
+                {getActiveFilterCount() > 0 && (
+                  <button
+                    onClick={() => setCurrentFilters({
+                      priceRange: [0, 200000],
+                      brands: [],
+                      ram: [],
+                      storage: [],
+                      os: [],
+                      inStock: false,
+                    })}
+                    className="bg-shop_light_green hover:bg-shop_dark_green text-white px-6 py-3 rounded-lg"
+                  >
+                    Clear All Filters
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className={`grid ${gridCols} gap-4`}>
+                  {filteredProducts.map((product) => (
+                    <Suspense key={`product-${product._id || product.id}`} fallback={
+                      <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden w-full max-w-xs mx-auto animate-pulse">
+                        <div className="h-48 bg-gray-200"></div>
+                        <div className="p-4 space-y-3">
+                          <div className="h-4 bg-gray-200 rounded"></div>
+                          <div className="h-6 bg-gray-200 rounded"></div>
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-8 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                    }>
+                      <LazyProductCard product={product} />
+                    </Suspense>
+                  ))}
+                </div>
+
+                {/* Results Summary */}
+                <div className="mt-8 text-center text-sm text-gray-600">
+                  Showing {filteredProducts.length} of {products.length} products
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

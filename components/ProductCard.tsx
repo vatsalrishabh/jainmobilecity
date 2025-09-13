@@ -99,12 +99,12 @@ const ProductCard = memo(({ product }: { product: Product }) => {
 
         {/* Specifications - Compact */}
         <div className="flex flex-wrap gap-1 mb-3">
-          {product.specifications.ram && (
+          {product.specifications?.ram && (
             <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
               {product.specifications.ram} RAM
             </span>
           )}
-          {product.specifications.storage && (
+          {product.specifications?.storage && (
             <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
               {product.specifications.storage}
             </span>

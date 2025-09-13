@@ -213,12 +213,12 @@ const SingleProductPage = async ({ params }: ProductPageProps) => {
               </h2>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { icon: "📱", label: "Display", value: product.specifications.display },
-                  { icon: "⚡", label: "Processor", value: product.specifications.processor },
-                  { icon: "📷", label: "Camera", value: product.specifications.camera },
-                  { icon: "🔋", label: "Battery", value: product.specifications.battery },
-                  { icon: "🧠", label: "RAM & Storage", value: `${product.specifications.ram} RAM | ${product.specifications.storage} Storage` },
-                  { icon: "💻", label: "Operating System", value: product.specifications.os }
+                  { icon: "📱", label: "Display", value: product.specifications?.display },
+                  { icon: "⚡", label: "Processor", value: product.specifications?.processor },
+                  { icon: "📷", label: "Camera", value: product.specifications?.camera },
+                  { icon: "🔋", label: "Battery", value: product.specifications?.battery },
+                  { icon: "🧠", label: "RAM & Storage", value: `${product.specifications?.ram || 'N/A'} RAM | ${product.specifications?.storage || 'N/A'} Storage` },
+                  { icon: "💻", label: "Operating System", value: product.specifications?.os }
                 ].map((spec, index) => (
                   <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
                     <span className="text-sm">{spec.icon}</span>
@@ -253,13 +253,13 @@ const SingleProductPage = async ({ params }: ProductPageProps) => {
                 {[
                   { label: "Brand", value: product.brand, icon: "🏷️" },
                   { label: "Model", value: product.name, icon: "📱" },
-                  { label: "Processor", value: product.specifications.processor, icon: "⚡" },
-                  { label: "Display", value: product.specifications.display, icon: "📺" },
-                  { label: "Camera", value: product.specifications.camera, icon: "📷" },
-                  { label: "Battery", value: product.specifications.battery, icon: "🔋" },
-                  { label: "RAM", value: product.specifications.ram, icon: "🧠" },
-                  { label: "Storage", value: product.specifications.storage, icon: "💾" },
-                  { label: "Operating System", value: product.specifications.os, icon: "💻" }
+                  { label: "Processor", value: product.specifications?.processor, icon: "⚡" },
+                  { label: "Display", value: product.specifications?.display, icon: "📺" },
+                  { label: "Camera", value: product.specifications?.camera, icon: "📷" },
+                  { label: "Battery", value: product.specifications?.battery, icon: "🔋" },
+                  { label: "RAM", value: product.specifications?.ram, icon: "🧠" },
+                  { label: "Storage", value: product.specifications?.storage, icon: "💾" },
+                  { label: "Operating System", value: product.specifications?.os, icon: "💻" }
                 ].map((spec, index) => (
                   <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
                     <div className="flex items-center gap-2">

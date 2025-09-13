@@ -11,7 +11,7 @@ const mockUsers: IUser[] = [
     mobile: "9876543210",
     address: "123 Main Street, NY 10001",
     createdAt: new Date("2024-01-15"),
-  } as IUser,
+  },
   {
     _id: "2",
     name: "Jane Smith",
@@ -20,7 +20,7 @@ const mockUsers: IUser[] = [
     mobile: "9871234567",
     address: "456 Elm Road, CA 90210",
     createdAt: new Date("2024-01-14"),
-  } as IUser,
+  },
   {
     _id: "3",
     name: "Mike Johnson",
@@ -29,7 +29,7 @@ const mockUsers: IUser[] = [
     mobile: "9874567890",
     address: "789 Oak Avenue, TX 75001",
     createdAt: new Date("2024-01-13"),
-  } as IUser,
+  },
   {
     _id: "4",
     name: "Sarah Wilson",
@@ -38,7 +38,7 @@ const mockUsers: IUser[] = [
     mobile: "9877891234",
     address: "321 Pine Street, FL 33101",
     createdAt: new Date("2024-01-12"),
-  } as IUser,
+  },
   {
     _id: "5",
     name: "David Brown",
@@ -47,7 +47,7 @@ const mockUsers: IUser[] = [
     mobile: "9873216540",
     address: "654 Maple Drive, WA 98101",
     createdAt: new Date("2024-01-11"),
-  } as IUser,
+  },
 ];
 
 export const useUserManagement = () => {
@@ -104,7 +104,7 @@ export const useUserManagement = () => {
   };
 
   const handleEditUser = (user: IUser) => {
-    setEditingUser({ ...user });
+    setEditingUser(user as IUser);
     setIsEditOpen(true);
   };
 
