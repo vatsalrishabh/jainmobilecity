@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <body className="font-poppins antialiased">
+      <body className="font-poppins antialiased" suppressHydrationWarning={true}>
         {children}
         <Toaster
           position="bottom-right"

@@ -24,39 +24,51 @@ const SideNavbar: React.FC<Props> = ({ changeRightComponent }) => {
   const [activeTab, setActiveTab] = useState("crudOperation");
 
   const navItems = [
-    { 
-      title: "Dashboard", 
-      key: "dashboard", 
+    {
+      title: "Dashboard",
+      key: "dashboard",
       icon: <Home size={20} />,
       description: "Overview & Analytics"
     },
-    { 
-      title: "Products", 
-      key: "crudOperation", 
+    {
+      title: "Products",
+      key: "crudOperation",
       icon: <Package size={20} />,
       description: "Manage Products"
     },
-    { 
-      title: "Sales", 
-      key: "allSales", 
+    {
+      title: "Sales Dashboard",
+      key: "salesDashboard",
       icon: <TrendingUp size={20} />,
+      description: "Order Management"
+    },
+    {
+      title: "User Management",
+      key: "userManagement",
+      icon: <Users size={20} />,
+      description: "Customer Accounts"
+    },
+    {
+      title: "Sales",
+      key: "allSales",
+      icon: <BarChart size={20} />,
       description: "Orders & Revenue"
     },
-    { 
-      title: "Users", 
-      key: "allUser", 
+    {
+      title: "Users",
+      key: "allUser",
       icon: <Users size={20} />,
       description: "Customer Management"
     },
-    { 
-      title: "Analytics", 
-      key: "analytics", 
+    {
+      title: "Analytics",
+      key: "analytics",
       icon: <BarChart size={20} />,
       description: "Reports & Insights"
     },
-    { 
-      title: "Settings", 
-      key: "settings", 
+    {
+      title: "Settings",
+      key: "settings",
       icon: <Settings size={20} />,
       description: "System Configuration"
     },

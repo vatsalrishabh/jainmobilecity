@@ -1,6 +1,6 @@
 "use client";
 
-import useStore from "@/store";
+import useStore, { useFavoriteCount } from "@/store";
 import { useState } from "react";
 import Container from "./Container";
 import { Heart, X } from "lucide-react";
@@ -16,8 +16,9 @@ import AddToCartButton from "./AddToCartButton";
 const WishListProducts = () => {
   const [visibleProducts, setVisibleProducts] = useState(7);
   const { favoriteProduct, removeFromFavorite, resetFavorite } = useStore();
+  const favoriteCount = useFavoriteCount();
   const loadMore = () => {
-    setVisibleProducts((prev) => Math.min(prev + 5, favoriteProduct.length));
+    setVisibleProducts((prev) => Math.min(prev + 5, favoriteCount));
   };
 
   const handleResetWishlist = () => {
@@ -32,7 +33,7 @@ const WishListProducts = () => {
 
   return (
     <Container>
-      {favoriteProduct?.length > 0 ? (
+      {favoriteCount > 0 ? (
         <>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -111,7 +112,7 @@ const WishListProducts = () => {
             </table>
           </div>
           <div className="flex items-center gap-2">
-            {visibleProducts < favoriteProduct?.length && (
+            {visibleProducts < favoriteCount && (
               <div className="my-5">
                 <Button variant="outline" onClick={loadMore}>
                   Load More
@@ -129,7 +130,7 @@ const WishListProducts = () => {
               </div>
             )}
           </div>
-          {favoriteProduct?.length > 0 && (
+          {favoriteCount > 0 && (
             <Button
               onClick={handleResetWishlist}
               className="mb-5 font-semibold"

@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { Product } from "@/types/product";
+import { useRouter } from "next/navigation";
 
 interface Props {
   product: Product;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const BuyNowButton = ({ product, className }: Props) => {
+  const router = useRouter();
   const isOutOfStock = product?.stock === 0;
 
   const handleBuyNow = () => {
@@ -18,8 +20,16 @@ const BuyNowButton = ({ product, className }: Props) => {
       return;
     }
 
-    // 👉 Replace with checkout logic (Stripe, Razorpay, etc.)
-    toast.success(`Proceeding to checkout with ${product?.name}`);
+    // Store product info in localStorage for checkout page
+    const checkoutData = {
+      productId: product._id || product.id,
+      quantity: 1,
+      product: product
+    };
+    localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+
+    // Navigate to checkout page
+    router.push('/checkout?from=buyNow');
   };
 
   return (

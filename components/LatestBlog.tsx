@@ -1,7 +1,7 @@
 import React from "react";
 import Title from "./Title";
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 
 // Mock data for development
 const mockBlogs = [
@@ -38,7 +38,7 @@ const LatestBlog = () => {
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {mockBlogs.map((blog) => (
           <div key={blog._id} className="bg-shop_light_bg p-4 rounded-lg hover:shadow-md transition-shadow">
-            <Link href={`/blog/${blog.slug.current}`}>
+            {/* <Link href={`/blog/${blog.slug.current}`}> */}
               <div className="overflow-hidden rounded-lg mb-3">
                 <Image
                   src={blog.mainImage}
@@ -53,7 +53,7 @@ const LatestBlog = () => {
                 <p className="text-sm text-gray-600 line-clamp-2">{blog.excerpt}</p>
                 <p className="text-xs text-gray-500">{new Date(blog.publishedAt).toLocaleDateString()}</p>
               </div>
-            </Link>
+            {/* </Link> */}
           </div>
         ))}
       </div>

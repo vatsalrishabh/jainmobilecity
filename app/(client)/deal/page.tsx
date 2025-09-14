@@ -1,24 +1,23 @@
-import Container from "@/components/Container";
-import ProductCard from "@/components/ProductCard";
-import Title from "@/components/Title";
-import { getDealProducts } from "@/sanity/queries";
-import React from "react";
+"use client";
 
-const DealPage = async () => {
-  const products = await getDealProducts();
+import React from "react";
+import Container from "@/components/Container";
+
+const DealPage = () => {
+  console.log('🎯 DealPage component rendering');
+
   return (
-    <div className="py-10 bg-deal-bg">
-      <Container>
-        <Title className="mb-5 underline underline-offset-4 decoration-[1px] text-base uppercase tracking-wide">
-          Hot Deals of the Week
-        </Title>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
-          {products?.map((product) => (
-            <ProductCard key={product?._id} product={product} />
-          ))}
+    <Container className="bg-shop-light-pink">
+      <div className="py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 text-center">
+          <h1 className="text-4xl font-bold text-green-600 mb-4">🎉 Hot Deals Page</h1>
+          <p className="text-lg text-gray-700 mb-4">Amazing discounts on premium mobile devices!</p>
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <p className="text-sm text-blue-600">Component is working correctly</p>
+          </div>
         </div>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 

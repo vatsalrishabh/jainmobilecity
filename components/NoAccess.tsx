@@ -1,5 +1,5 @@
 import React from "react";
-import { Lock, LogIn, UserPlus } from "lucide-react";
+import { Lock, LogIn } from "lucide-react";
 import Link from "next/link";
 
 const NoAccess = () => {
@@ -12,7 +12,7 @@ const NoAccess = () => {
         
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Access Denied</h1>
         <p className="text-gray-600 mb-6">
-          You don't have permission to access this page. Please sign in with appropriate credentials.
+          You don&apos;t have permission to access this page. Please sign in with appropriate credentials.
         </p>
         
         <div className="space-y-3">

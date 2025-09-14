@@ -1,48 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import mongoose from 'mongoose';
-import { Product } from '@/types/product';
-
-// Connect to MongoDB
-const connectDB = async () => {
-  try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jainmobilecity');
-    }
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-  }
-};
-
-// Product Schema
-const productSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  brand: { type: String, required: true },
-  modelNumber: String,
-  description: String,
-  specifications: {
-    ram: { type: String, required: true },
-    storage: { type: String, required: true },
-    processor: String,
-    battery: String,
-    display: String,
-    camera: String,
-    os: String,
-  },
-  costPrice: { type: Number, required: true },
-  sellingPrice: { type: Number, required: true },
-  stock: { type: Number, required: true },
-  imageUrls: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
-});
-
-const ProductModel = mongoose.models.Product || mongoose.model('Product', productSchema);
+import connectToDatabase from '@/lib/mongodb';
+import { Product } from '@/models/Product';
 
 // GET - Fetch all products
 export async function GET() {
   try {
-    await connectDB();
-    const products = await ProductModel.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(products);
+    await connectToDatabase();
+    const products = await Product.find({}).sort({ createdAt: -1 });
+
+    // Transform products to ensure proper ID fields
+    const transformedProducts = products.map(product => ({
+      ...product.toObject(),
+      id: product._id.toString(),
+      _id: product._id
+    }));
+
+    return NextResponse.json(transformedProducts);
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json(
@@ -55,12 +28,12 @@ export async function GET() {
 // POST - Create new product
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
-    
-    const product = new ProductModel(body);
+
+    const product = new Product(body);
     await product.save();
-    
+
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error('Error creating product:', error);
@@ -74,23 +47,33 @@ export async function POST(request: NextRequest) {
 // PUT - Update product
 export async function PUT(request: NextRequest) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const body = await request.json();
-    const { _id, ...updateData } = body;
-    
-    const product = await ProductModel.findByIdAndUpdate(
-      _id,
+    const { _id, id, ...updateData } = body;
+
+    // Handle both _id and id fields (Mongoose uses _id, but JSON responses use id)
+    const productId = _id || id;
+
+    if (!productId) {
+      return NextResponse.json(
+        { error: 'Product ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      productId,
       updateData,
       { new: true, runValidators: true }
     );
-    
+
     if (!product) {
       return NextResponse.json(
         { error: 'Product not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(product);
   } catch (error) {
     console.error('Error updating product:', error);
@@ -104,27 +87,30 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete product
 export async function DELETE(request: NextRequest) {
   try {
-    await connectDB();
+    await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json(
         { error: 'Product ID is required' },
         { status: 400 }
       );
     }
-    
-    const product = await ProductModel.findByIdAndDelete(id);
-    
+
+    const product = await Product.findByIdAndDelete(id);
+
     if (!product) {
       return NextResponse.json(
         { error: 'Product not found' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ message: 'Product deleted successfully' });
+
+    return NextResponse.json({
+      message: 'Product deleted successfully',
+      deletedProduct: product
+    });
   } catch (error) {
     console.error('Error deleting product:', error);
     return NextResponse.json(

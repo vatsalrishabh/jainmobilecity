@@ -1,7 +1,7 @@
 "use client";
 import { Category, Product } from "@/sanity.types";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "./ui/button";
 import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
@@ -24,7 +24,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     router.push(`/category/${newSlug}`, { scroll: false }); // Update URL without
   };
 
-  const fetchProducts = async (categorySlug: string) => {
+  const fetchProducts = useCallback(async (categorySlug: string) => {
     setLoading(true);
     try {
       const query = `
@@ -39,10 +39,10 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
   useEffect(() => {
     fetchProducts(currentSlug);
-  }, [router]);
+  }, [currentSlug, fetchProducts, router]);
 
   return (
     <div className="py-5 flex flex-col md:flex-row items-start gap-5">
