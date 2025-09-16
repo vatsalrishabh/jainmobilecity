@@ -6,7 +6,7 @@ This is a beautiful, modern admin dashboard for managing an e-commerce mobile ph
 ## Features
 
 ### 🎯 **Dashboard Overview**
-- **Statistics Cards**: Total Revenue, Orders, Customers, Products
+- **Statistics Cards**: Total Revenue, Orderss, Customers, Products
 - **Quick Actions**: Add Product, View Reports, Export Data, Refresh
 - **Recent Orders**: Live order tracking with status indicators
 - **Top Products**: Best-selling products with ratings and sales data
